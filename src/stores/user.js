@@ -24,6 +24,33 @@ export const user = defineStore("user", () => {
       name + "=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;";
   }
 
+  async function createUser(firstName, lastName, email, password) {
+    const userObject = {
+      first_name: firstName,
+      last_name: lastName,
+      email: email,
+      password: password,
+    };
+
+    await axios.post(root + "/api/create_user", userObject).then((res) => {
+      if (res.data.success) {
+        console.log("success!", res.data);
+
+        //set bearer token for future requests
+        axios.defaults.headers.common = {
+          Authorization: `Bearer ${res.data.token.plainTextToken}`,
+        };
+
+        setCookie("bball_sim_2.0_auth", res.data.token.plainTextToken, 7);
+
+        user.value = res.data.user;
+        router.push({ path: "/team" });
+      } else {
+        console.log("failure..", res.data);
+      }
+    });
+  }
+
   async function login(email, password) {
     const userObject = {
       email: email,
@@ -75,6 +102,7 @@ export const user = defineStore("user", () => {
 
   return {
     user,
+    createUser,
     login,
     checkUser,
     logout,

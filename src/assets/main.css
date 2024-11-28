@@ -32,5 +32,9 @@ html {
                 margin:2%;
               }
           }
+
+          .form-error {
+            color: red;
+          }
     }
 }
