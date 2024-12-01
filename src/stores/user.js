@@ -7,7 +7,9 @@ export const user = defineStore("user", () => {
   let root = "http://127.0.0.1:8000";
   const router = useRouter();
 
+  const loading = ref(false);
   const user = ref(null);
+  const allTeams = ref([]);
 
   function setCookie(name, value, days) {
     var expires = "";
@@ -25,6 +27,8 @@ export const user = defineStore("user", () => {
   }
 
   async function createUser(firstName, lastName, email, password) {
+    loading.value = true;
+
     const userObject = {
       first_name: firstName,
       last_name: lastName,
@@ -44,14 +48,18 @@ export const user = defineStore("user", () => {
         setCookie("bball_sim_2.0_auth", res.data.token.plainTextToken, 7);
 
         user.value = res.data.user;
-        router.push({ path: "/team" });
+        loading.value = false;
+        router.push({ path: "/mode-select" });
       } else {
         console.log("failure..", res.data);
+        loading.value = false;
       }
     });
   }
 
   async function login(email, password) {
+    loading.value = true;
+
     const userObject = {
       email: email,
       password: password,
@@ -69,9 +77,11 @@ export const user = defineStore("user", () => {
         setCookie("bball_sim_2.0_auth", res.data.token.plainTextToken, 7);
 
         user.value = res.data.user;
+        loading.value = false;
         router.push({ path: "/team" });
       } else {
         console.log("failure..", res.data);
+        loading.value = false;
       }
     });
   }
@@ -100,11 +110,26 @@ export const user = defineStore("user", () => {
     });
   }
 
+  //move to teamStore when caching stops fucking me
+  async function getAllTeams() {
+    await axios.get(root + "/api/all_teams").then((res) => {
+      if (res.data.success) {
+        console.log("success!", res.data);
+        allTeams.value = JSON.parse(res.data.all_teams);
+      } else {
+        console.log("failure...", res.data);
+      }
+    });
+  }
+
   return {
+    loading,
     user,
     createUser,
     login,
     checkUser,
     logout,
+    getAllTeams,
+    allTeams,
   };
 });

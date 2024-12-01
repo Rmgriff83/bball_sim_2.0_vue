@@ -21,7 +21,12 @@
       </div>
 
       <button @click.prevent="login">
-        login
+        <span v-if="!userStore.loading">
+          Login
+        </span>
+        <span v-else>
+          <v-progress-circular indeterminate></v-progress-circular>
+        </span>
       </button>
     </form>
 
@@ -64,7 +69,8 @@ export default {
     return {
       v$,
       state,
-      login
+      login,
+      userStore
     }
   },
 

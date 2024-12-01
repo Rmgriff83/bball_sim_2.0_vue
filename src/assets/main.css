@@ -22,6 +22,10 @@ html {
 
         }
 
+        input {
+          border:1px solid black;
+        }
+
         nav {
             width:100%;
             border:1px solid red;
@@ -35,6 +39,39 @@ html {
 
           .form-error {
             color: red;
+          }
+
+          .team-tab{
+            border: 1px solid red;
+            margin:2% 4%;
+
+            .team-box{
+
+              .team-name{
+
+              }
+
+              .team-content{
+                display: grid;
+                grid-template-columns: 80% 20%;
+
+                .team-meta{
+                  padding:1%;
+                  border:1px solid blue;
+                  display: grid;
+                  grid-template-columns: 1fr 1fr;
+  
+                  .coach-box{
+                    border:1px solid green;
+                    grid-column: 1 / span 2;
+                  }
+                }
+  
+                button.select-team{
+                  padding:2% 4%;
+                }
+              }
+            }
           }
     }
 }

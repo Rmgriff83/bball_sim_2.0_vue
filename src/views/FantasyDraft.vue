@@ -1,9 +1,8 @@
 <template>
-  <div class="team">
-    team
-    <br>
-    team pg
-
+  <div class="fantasy-draft">
+   <div>
+    fantasy draft pg
+   </div>
   </div>
 </template>
 
@@ -14,12 +13,11 @@ export default {
 
     // expose to template and other options API hooks
     return {
-      
     }
   },
 
   mounted() {
-
+    
   }
 }
 </script>

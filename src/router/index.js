@@ -33,6 +33,30 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: () => import("../views/Login.vue"),
     },
+    {
+      path: "/mode-select",
+      name: "ModeSelect",
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import("../views/ModeSelect.vue"),
+    },
+    {
+      path: "/team-select",
+      name: "TeamSelect",
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import("../views/TeamSelect.vue"),
+    },
+    {
+      path: "/fantasy-draft",
+      name: "FantasyDraft",
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import("../views/FantasyDraft.vue"),
+    },
   ],
 });
 
