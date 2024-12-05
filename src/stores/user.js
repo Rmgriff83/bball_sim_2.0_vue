@@ -8,8 +8,21 @@ export const user = defineStore("user", () => {
   const router = useRouter();
 
   const loading = ref(false);
+
+  const allTeams = ref(null);
+
   const user = ref(null);
-  const allTeams = ref([]);
+  const userCampaigns = ref(null);
+  const activeCampaign = ref(1);
+  const userTeam = ref(null);
+
+  function reset() {
+    allTeams.value = null;
+    user.value = null;
+    userCampaigns.value = null;
+    activeCampaign.value = null;
+    userTeam.value = null;
+  }
 
   function setCookie(name, value, days) {
     var expires = "";
@@ -103,7 +116,47 @@ export const user = defineStore("user", () => {
       eraseCookie("bball_sim_2.0_auth");
       if (res.data.success) {
         console.log("success", res.data);
-        user.value = null;
+        reset();
+        router.push({ path: "/login" });
+      } else {
+        console.log("failure..", res.data);
+      }
+    });
+  }
+
+  async function selectTeam(team_id) {
+    const teamObject = {
+      team_id: team_id,
+      campaign_id: activeCampaign.value,
+    };
+
+    await axios.post(root + "/api/select_team", teamObject).then((res) => {
+      if (res.data.success) {
+        console.log("success", res.data);
+      } else {
+        console.log("failure..", res.data);
+      }
+    });
+  }
+
+  async function getUserCampaigns() {
+    await axios.get(root + "/api/user_campaigns").then((res) => {
+      if (res.data.success) {
+        console.log("success", res.data);
+      } else {
+        console.log("failure..", res.data);
+      }
+    });
+  }
+
+  async function getUserTeam() {
+    const teamObject = {
+      campaign_id: activeCampaign.value,
+    };
+    await axios.post(root + "/api/user_team", teamObject).then((res) => {
+      if (res.data.success) {
+        console.log("success", res.data);
+        userTeam.value = res.data.user_team;
       } else {
         console.log("failure..", res.data);
       }
@@ -125,11 +178,17 @@ export const user = defineStore("user", () => {
   return {
     loading,
     user,
+    getUserCampaigns,
+    userCampaigns,
+    userTeam,
     createUser,
     login,
     checkUser,
     logout,
     getAllTeams,
     allTeams,
+    selectTeam,
+    getUserCampaigns,
+    getUserTeam,
   };
 });

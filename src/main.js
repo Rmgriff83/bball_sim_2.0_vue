@@ -42,4 +42,8 @@ if (getCookie("bball_sim_2.0_auth")) {
   };
 }
 
+import { user } from "@/stores/user";
+const userStore = user();
+userStore.checkUser();
+
 app.mount("#app");

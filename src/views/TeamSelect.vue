@@ -1,8 +1,10 @@
 <template>
   <div class="team-select">
    <div>
-    <div v-if="userStore.allTeams.length > 0">
-      <div v-for="team in userStore.allTeams" :key="team.id" class="team-tab">
+
+    TeAM: {{ userTeam }}
+    <div v-if="allTeams">
+      <div v-for="team in allTeams" :key="team.id" class="team-tab">
       <div class="team-box">
         <h2 class="team-name">{{ team.city + " " + team.name }}</h2>
         <div class="team-content">
@@ -18,7 +20,7 @@
           </p>
           
         </div>
-        <button class="select-team">
+        <button @click="selectTeam(team.id)" class="select-team">
           Select
         </button>
         </div>
@@ -33,23 +35,53 @@
 </template>
 
 <script>
+import { computed } from 'vue';
 import { user } from '@/stores/user';
+import { useRouter } from 'vue-router';
 
 export default {
   setup() {
     //teamStore is not working for some reason..probably caching
     const userStore = user();
+    const router = useRouter();
 
-    userStore.getAllTeams();
+    const allTeams = computed(() => {
+      if ( !userStore.allTeams ){
+        userStore.getAllTeams();
+      } else {
+        return userStore.allTeams;
+      }
+
+      return userStore.allTeams;
+    });
 
     function parseCoach(team) {
       return JSON.parse(team.coach_object);
     }
 
+    function selectTeam(team_id) {
+      return userStore.selectTeam(team_id);
+    }
+
+    const userTeam = computed(() => {
+      if ( !userStore.userTeam ) {
+        userStore.getUserTeam();
+        return userStore.userTeam;
+      }
+
+      return userStore.userTeam;
+    });
+
+    if ( userTeam ) {
+      router.push({path:"/team"});
+    }
+
     // expose to template and other options API hooks
     return {
-      userStore,
-      parseCoach
+      allTeams,
+      parseCoach,
+      selectTeam,
+      userTeam
     }
   },
 }

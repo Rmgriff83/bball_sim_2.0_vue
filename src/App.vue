@@ -17,11 +17,11 @@
 <script>
 import { defineCustomElement } from 'vue';
 import { RouterLink, RouterView } from 'vue-router';
-import LoginIcon from '@/components/LoginIcon.vue';
+import LoginIconNew from '@/components/LoginIconNew.vue';
 export default {
   setup() {
-   const CustomLoginIcon = defineCustomElement(LoginIcon);
-   customElements.define('login-icon', CustomLoginIcon);
+   const CustomLoginIconNew = defineCustomElement(LoginIconNew);
+   customElements.define('login-icon', CustomLoginIconNew);
 
     // expose to template and other options API hooks
     return {
