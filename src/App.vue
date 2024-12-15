@@ -7,7 +7,7 @@
         <RouterLink to="/new-user">New User</RouterLink>
         <RouterLink to="/login">Login</RouterLink>
       </nav>
-      <login-icon />
+      <bball-sim-login-icon />
     </div>
   </header>
 
@@ -15,13 +15,9 @@
 </template>
 
 <script>
-import { defineCustomElement } from 'vue';
 import { RouterLink, RouterView } from 'vue-router';
-import LoginIconNew from '@/components/LoginIconNew.vue';
 export default {
   setup() {
-   const CustomLoginIconNew = defineCustomElement(LoginIconNew);
-   customElements.define('login-icon', CustomLoginIconNew);
 
     // expose to template and other options API hooks
     return {

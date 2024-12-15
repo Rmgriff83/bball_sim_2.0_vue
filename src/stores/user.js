@@ -3,6 +3,8 @@ import { defineStore } from "pinia";
 import axios from "axios";
 import { useRouter } from "vue-router";
 
+import compileTeam from "./resources/compileTeam";
+
 export const user = defineStore("user", () => {
   let root = "http://127.0.0.1:8000";
   const router = useRouter();
@@ -13,8 +15,9 @@ export const user = defineStore("user", () => {
 
   const user = ref(null);
   const userCampaigns = ref(null);
-  const activeCampaign = ref(1);
+  const activeCampaign = ref(null);
   const userTeam = ref(null);
+  const userStarters = ref(null);
 
   function reset() {
     allTeams.value = null;
@@ -91,12 +94,23 @@ export const user = defineStore("user", () => {
 
         user.value = res.data.user;
         loading.value = false;
-        router.push({ path: "/team" });
+        router.push({ path: "/campaign-select" });
       } else {
         console.log("failure..", res.data);
         loading.value = false;
       }
     });
+  }
+
+  function getCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(";");
+    for (var i = 0; i < ca.length; i++) {
+      var c = ca[i];
+      while (c.charAt(0) == " ") c = c.substring(1, c.length);
+      if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+    }
+    return null;
   }
 
   async function checkUser() {
@@ -117,11 +131,50 @@ export const user = defineStore("user", () => {
       if (res.data.success) {
         console.log("success", res.data);
         reset();
+        clearActiveCampaign();
         router.push({ path: "/login" });
       } else {
         console.log("failure..", res.data);
       }
     });
+  }
+
+  async function createCampaign() {
+    await axios.post(root + "/api/create_campaign").then((res) => {
+      if (res.data.success) {
+        console.log("success", res.data);
+        activeCampaign.value = res.data.campaign.id;
+
+        if (!getCookie("bball_sim_2.0_active_campaign")) {
+          setCookie("bball_sim_2.0_active_campaign", activeCampaign.value, 7);
+        }
+
+        router.push({ path: "/team-select" });
+      } else {
+        console.log("failure..", res.data);
+      }
+    });
+  }
+
+  function setActiveCampaign(campaign_id) {
+    activeCampaign.value = campaign_id;
+
+    if (!getCookie("bball_sim_2.0_active_campaign")) {
+      setCookie("bball_sim_2.0_active_campaign", activeCampaign.value, 7);
+    }
+
+    getUserTeam().then(() => {
+      if (!userTeam.value) {
+        router.push({ path: "/team-select" });
+      } else {
+        router.push({ path: "/team" });
+      }
+    });
+  }
+
+  function clearActiveCampaign() {
+    activeCampaign.value = null;
+    eraseCookie("bball_sim_2.0_active_campaign");
   }
 
   async function selectTeam(team_id) {
@@ -133,6 +186,7 @@ export const user = defineStore("user", () => {
     await axios.post(root + "/api/select_team", teamObject).then((res) => {
       if (res.data.success) {
         console.log("success", res.data);
+        router.push({ path: "/team" });
       } else {
         console.log("failure..", res.data);
       }
@@ -143,6 +197,7 @@ export const user = defineStore("user", () => {
     await axios.get(root + "/api/user_campaigns").then((res) => {
       if (res.data.success) {
         console.log("success", res.data);
+        userCampaigns.value = res.data.user_campaigns;
       } else {
         console.log("failure..", res.data);
       }
@@ -156,11 +211,16 @@ export const user = defineStore("user", () => {
     await axios.post(root + "/api/user_team", teamObject).then((res) => {
       if (res.data.success) {
         console.log("success", res.data);
-        userTeam.value = res.data.user_team;
+
+        userTeam.value = compileTeam(res.data.user_team);
       } else {
         console.log("failure..", res.data);
       }
     });
+  }
+
+  async function commitStarter(player) {
+    console.log('commit starter', player);
   }
 
   //move to teamStore when caching stops fucking me
@@ -185,10 +245,14 @@ export const user = defineStore("user", () => {
     login,
     checkUser,
     logout,
+    createCampaign,
+    activeCampaign,
+    setActiveCampaign,
     getAllTeams,
     allTeams,
     selectTeam,
     getUserCampaigns,
     getUserTeam,
+    commitStarter
   };
 });

@@ -16,7 +16,7 @@
             overall rating: ?
           </p>
           <p class="coach-box">
-            {{parseCoach(team)}}
+            <!-- {{parseCoach(team)}} -->coach box
           </p>
           
         </div>
@@ -55,9 +55,9 @@ export default {
       return userStore.allTeams;
     });
 
-    function parseCoach(team) {
-      return JSON.parse(team.coach_object);
-    }
+    // function parseCoach(team) {
+    //   return JSON.parse(team.coach_object);
+    // }
 
     function selectTeam(team_id) {
       return userStore.selectTeam(team_id);
@@ -72,14 +72,14 @@ export default {
       return userStore.userTeam;
     });
 
-    if ( userTeam ) {
+    if ( userTeam.value ) {
       router.push({path:"/team"});
     }
 
     // expose to template and other options API hooks
     return {
       allTeams,
-      parseCoach,
+      // parseCoach,
       selectTeam,
       userTeam
     }

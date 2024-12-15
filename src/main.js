@@ -1,6 +1,6 @@
 import "./assets/main.css";
 
-import { createApp } from "vue";
+import { createApp } from "vue/dist/vue.esm-bundler";
 import { createPinia } from "pinia";
 
 import App from "./App.vue";
@@ -45,5 +45,28 @@ if (getCookie("bball_sim_2.0_auth")) {
 import { user } from "@/stores/user";
 const userStore = user();
 userStore.checkUser();
+
+if (getCookie("bball_sim_2.0_active_campaign")) {
+  userStore.activeCampaign = getCookie("bball_sim_2.0_active_campaign");
+}
+
+//add global components
+import { defineCustomElement } from "vue";
+import LoginIcon from "@/components/LoginIcon.vue";
+import Popup from "@/components/Popup.vue";
+import AdjustStarterPopup from "@/components/AdjustStarterPopup.vue";
+import PlayerTab from "@/components/PlayerTab.vue";
+const BballSimLoginIcon = defineCustomElement(LoginIcon);
+const BballSimPopup = defineCustomElement(Popup);
+const BballSimAdjustStarterPopup = defineCustomElement(AdjustStarterPopup);
+const BballSimPlayerTab = defineCustomElement(PlayerTab);
+
+customElements.define("bball-sim-login-icon", BballSimLoginIcon);
+customElements.define("bball-sim-popup", BballSimPopup);
+customElements.define(
+  "bball-sim-adjust-starter-popup",
+  BballSimAdjustStarterPopup
+);
+customElements.define("bball-sim-player-tab", BballSimPlayerTab);
 
 app.mount("#app");

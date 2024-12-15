@@ -41,7 +41,14 @@ html {
             color: red;
           }
 
-          .team-tab{
+          div.popup-modal-wrapper{
+            border:1px solid red;
+          }
+
+          .team-tab,
+          .campaign-tab,
+          .starter-tab,
+          .bench-tab{
             border: 1px solid red;
             margin:2% 4%;
 
@@ -72,6 +79,16 @@ html {
                 }
               }
             }
+          }
+
+          bball-sim-player-tab:hover,
+          bball-sim-player-tab:focus{
+            cursor:pointer;
+          }
+
+          .starter-tab{
+            border:1px solid blue;
+
           }
     }
 }

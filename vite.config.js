@@ -9,7 +9,13 @@ export default defineConfig({
     vue({
       template: {
         compilerOptions: {
-          isCustomElement: (tag) => ["md-linedivider"].includes(tag),
+          isCustomElement: (tag) =>
+            [
+              "bball-sim-login-icon",
+              "bball-sim-popup",
+              "bball-sim-adjust-starter-popup",
+              "bball-sim-player-tab",
+            ].includes(tag),
         },
       },
     }),

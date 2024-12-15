@@ -11,9 +11,18 @@
     </h2>
 
     <div class="campaign-select-box">
-      <button @click="createNewCampaigns" class="create-new-campaign">
+      <button @click="createCampaign" class="create-new-campaign">
         new
       </button>
+
+      <div v-for="campaign in userCampaigns" :key="campaign.id" class="campaign-tab">
+        <div class="campaign-box">
+          Id: {{ campaign.id }}
+          <button @click="setActiveCampaign(campaign.id)" class="select-campaign">
+            Select
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -38,23 +47,37 @@ export default {
       return userStore.userTeam;
     });
 
-    function createNewCampaign() {
-      console.log('create new campaign');
+    const activeCampaign = computed(() => {
+      return userStore.activeCampaign;
+    });
+
+    if ( activeCampaign.value ) {
+      router.push({path:"/team"});
     }
 
-    function toTeamSelect() {
-      router.push({ path: "/team-select" });
+    function createCampaign() {
+      return userStore.createCampaign();
     }
 
-    function toFantasyDraft() {
-      router.push({ path: "/fantasy-draft" });
+    function setActiveCampaign(campaign_id) {
+      return userStore.setActiveCampaign(campaign_id);
     }
+
+    // function toTeamSelect() {
+    //   router.push({ path: "/team-select" });
+    // }
+
+    // function toFantasyDraft() {
+    //   router.push({ path: "/fantasy-draft" });
+    // }
 
     // expose to template and other options API hooks
     return {
+      createCampaign,
+      setActiveCampaign,
       userCampaigns,
-      toTeamSelect,
-      toFantasyDraft
+      // toTeamSelect,
+      // toFantasyDraft
     }
   },
 
